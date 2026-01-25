@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfdg1rmb4a8qs"]
+
+[ext_resource type="Script" uid="uid://bxenieywpgxmr" path="res://scenes/world/world.gd" id="1_dphjl"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_dphjl")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ConnectButton" type="Button" parent="CanvasLayer"]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -15.5
+offset_right = 47.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Find Match"
+
+[node name="PlayerContainer" type="Node2D" parent="."]
+
+[node name="SpawnPointContainer" type="Node2D" parent="."]
+
+[node name="SpawnPoint1" type="Marker2D" parent="SpawnPointContainer"]
+position = Vector2(65, 181)
+
+[node name="SpawnPoint2" type="Marker2D" parent="SpawnPointContainer"]
+position = Vector2(479, 182)
+
+[node name="RockAttackContainer" type="Node2D" parent="."]
+
+[node name="RockAttackMultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://dym2mqi6fe672")
+spawn_path = NodePath("../RockAttackContainer")

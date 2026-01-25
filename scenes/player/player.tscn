@@ -1,0 +1,93 @@
+[gd_scene load_steps=11 format=3 uid="uid://1v7tjrt1r8if"]
+
+[ext_resource type="Script" uid="uid://d4lhq4jlwaii3" path="res://scenes/player/player.gd" id="1_i3pqv"]
+[ext_resource type="Texture2D" uid="uid://3f0ks5cye1ua" path="res://assets/Dungeon_Character_2.png" id="2_lvxji"]
+[ext_resource type="Script" uid="uid://mx4bkumvh160" path="res://scripts/player_input.gd" id="3_gmlin"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="4_p47bc"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="5_75vfm"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lvxji"]
+radius = 4.0
+height = 12.0
+
+[sub_resource type="Animation" id="Animation_75vfm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_p47bc"]
+resource_name = "roll"
+length = 0.2
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 3.141592653589793, 6.283185307179586]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_75vfm"]
+_data = {
+&"RESET": SubResource("Animation_75vfm"),
+&"roll": SubResource("Animation_p47bc")
+}
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p47bc"]
+properties/0/path = NodePath(".:global_position")
+properties/0/spawn = true
+properties/0/replication_mode = 0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("input")]
+script = ExtResource("1_i3pqv")
+input = NodePath("Input")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+texture = ExtResource("2_lvxji")
+hframes = 7
+vframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_lvxji")
+
+[node name="Input" type="Node" parent="."]
+script = ExtResource("3_gmlin")
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("4_p47bc")
+root = NodePath("..")
+state_properties = Array[String]([":global_position"])
+input_properties = Array[String](["Input:movement", "Input:is_rolling", "Input:is_shooting"])
+metadata/_custom_type_script = "uid://d350u8evihs1u"
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("5_75vfm")
+root = NodePath("..")
+properties = Array[String]([":global_position"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_75vfm")
+}
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_p47bc")
