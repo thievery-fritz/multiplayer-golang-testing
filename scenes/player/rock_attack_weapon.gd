@@ -47,7 +47,7 @@ func _shoot():
 	var rock = rock_attack_scene.instantiate() as Area2D
 	rock.set_multiplayer_authority(1)
 	rock.global_position = rock_spawn_pos
-	NetworkManager.rock_attack_container.add_child(rock)
+	NetworkManager.rock_attack_container.add_child(rock, true)
 
 func _undo_shoot():
 	shoot_rewindable_action.erase_context()

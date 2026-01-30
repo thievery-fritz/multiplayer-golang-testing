@@ -76,7 +76,7 @@ script = ExtResource("3_gmlin")
 [node name="RollbackSynchronizer" type="Node" parent="." unique_id=1839362803 node_paths=PackedStringArray("root")]
 script = ExtResource("4_p47bc")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":roll_timer", ":cooldown_timer", ":recovery_timer"])
+state_properties = Array[String]([":global_position", ":roll_timer", ":cooldown_timer", ":recovery_timer", "RockAttackWeapon:last_shoot"])
 input_properties = Array[String](["Input:movement", "Input:is_rolling", "Input:is_shooting"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
