@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://1v7tjrt1r8if"]
+[gd_scene format=3 uid="uid://1v7tjrt1r8if"]
 
 [ext_resource type="Script" uid="uid://d4lhq4jlwaii3" path="res://scenes/player/player.gd" id="1_i3pqv"]
 [ext_resource type="Texture2D" uid="uid://3f0ks5cye1ua" path="res://assets/Dungeon_Character_2.png" id="2_lvxji"]
 [ext_resource type="Script" uid="uid://mx4bkumvh160" path="res://scripts/player_input.gd" id="3_gmlin"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="4_p47bc"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="5_75vfm"]
+[ext_resource type="Script" uid="uid://bwb2x8cc1otea" path="res://scenes/player/rock_attack_weapon.gd" id="6_0owmy"]
+[ext_resource type="Script" uid="uid://chr4omg2hy3yu" path="res://addons/netfox/rewindable-action.gd" id="7_qek5x"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lvxji"]
 radius = 4.0
@@ -50,44 +52,52 @@ _data = {
 }
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p47bc"]
-properties/0/path = NodePath(".:global_position")
+properties/0/path = NodePath(".:visible")
 properties/0/spawn = true
-properties/0/replication_mode = 0
+properties/0/replication_mode = 2
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("input")]
+[node name="Player" type="CharacterBody2D" unique_id=2070286558 node_paths=PackedStringArray("input")]
 script = ExtResource("1_i3pqv")
 input = NodePath("Input")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1468791154]
 position = Vector2(0, -1)
 texture = ExtResource("2_lvxji")
 hframes = 7
 vframes = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2007016079]
 position = Vector2(0, -1)
 shape = SubResource("CapsuleShape2D_lvxji")
 
-[node name="Input" type="Node" parent="."]
+[node name="Input" type="Node" parent="." unique_id=2047109390]
 script = ExtResource("3_gmlin")
 
-[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+[node name="RollbackSynchronizer" type="Node" parent="." unique_id=1839362803 node_paths=PackedStringArray("root")]
 script = ExtResource("4_p47bc")
 root = NodePath("..")
-state_properties = Array[String]([":global_position"])
+state_properties = Array[String]([":global_position", ":roll_timer", ":cooldown_timer", ":recovery_timer"])
 input_properties = Array[String](["Input:movement", "Input:is_rolling", "Input:is_shooting"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
-[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+[node name="TickInterpolator" type="Node" parent="." unique_id=1564638289 node_paths=PackedStringArray("root")]
 script = ExtResource("5_75vfm")
 root = NodePath("..")
 properties = Array[String]([":global_position"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_75vfm")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=137619979]
+libraries/ = SubResource("AnimationLibrary_75vfm")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=22389690]
 replication_config = SubResource("SceneReplicationConfig_p47bc")
+
+[node name="RockAttackWeapon" type="Node2D" parent="." unique_id=586324680 node_paths=PackedStringArray("player", "shoot_rewindable_action", "rbs", "input")]
+script = ExtResource("6_0owmy")
+player = NodePath("..")
+shoot_rewindable_action = NodePath("ShootRewindableAction")
+rbs = NodePath("../RollbackSynchronizer")
+input = NodePath("../Input")
+
+[node name="ShootRewindableAction" type="Node" parent="RockAttackWeapon" unique_id=1758432438]
+script = ExtResource("7_qek5x")

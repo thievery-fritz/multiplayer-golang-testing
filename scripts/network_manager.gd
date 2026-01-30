@@ -47,7 +47,13 @@ func _on_peer_join(id: int):
 	print("peer join id %d" % id)
 	if id != 1:
 		print("_on_peer_join (%d)" % multiplayer.get_unique_id())
-		_spawn_player(id)
+		var player_avatar = _spawn_player(id)
+		player_avatar.visible = false
+		while not NetworkTime.is_client_synced(id):
+			print("Waiting for sync...")
+			await NetworkTime.after_client_sync
+		player_avatar.visible = true
+		print("Showing player.")
 
 func _on_peer_leave(id: int):
 	print("_on_peer_leave (%d)" % multiplayer.get_unique_id())
@@ -73,6 +79,7 @@ func _spawn_player(id: int):
 	var input = player.find_child("Input")
 	if input:
 		input.set_multiplayer_authority(id)
+	return player
 
 func _get_arg_value(args: Array, flag: String, default: String) -> String:
 	for i in range(args.size()):

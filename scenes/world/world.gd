@@ -10,6 +10,8 @@ func _ready() -> void:
 	NetworkManager.spawn_point_container = spawn_point_container
 	NetworkManager.rock_attack_container = rock_attack_container
 	connect_button.pressed.connect(_on_connect_button_pressed)
+	if "--headless" in OS.get_cmdline_args():
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 
 func _on_connect_button_pressed() -> void:
 	connect_button.hide()

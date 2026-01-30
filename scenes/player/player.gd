@@ -1,11 +1,11 @@
 extends CharacterBody2D
+class_name Player
 
 @export var speed = 100.0
 @export var roll_multiplier = 2.5
 @export var roll_duration_ticks = 10
 @export var roll_cooldown_ticks = 30
 @export var input: PlayerInput
-@onready var rock_scene: PackedScene = preload("res://scenes/rock_attack/rock_attack.tscn")
 
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite = $Sprite2D
@@ -21,9 +21,6 @@ func _ready():
 	global_position = spawn_position
 
 func _rollback_tick(_delta, _tick, is_fresh):
-	if input.is_shooting and is_fresh and multiplayer.is_server():
-		var rock_spawn_pos = global_position + (input.movement.normalized() * 60.0)
-		_server_spawn_rock(rock_spawn_pos)
 	if cooldown_timer > 0:
 		cooldown_timer -= 1
 	if recovery_timer > 0:
@@ -46,12 +43,6 @@ func _rollback_tick(_delta, _tick, is_fresh):
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
-
-func _server_spawn_rock(rock_spawn_pos: Vector2):
-	if multiplayer.is_server():
-		var rock = rock_scene.instantiate() as Area2D
-		rock.global_position = rock_spawn_pos
-		NetworkManager.rock_attack_container.add_child(rock, true)
 
 # Just using process for animations at this point, so no need to run them on the server as it is headless
 func _process(_delta: float) -> void:
