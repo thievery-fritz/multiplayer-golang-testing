@@ -35,3 +35,7 @@ position = Vector2(65, 181)
 position = Vector2(479, 182)
 
 [node name="RockAttackContainer" type="Node2D" parent="." unique_id=727981113]
+
+[node name="RockMultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1918586338]
+_spawnable_scenes = PackedStringArray("uid://dym2mqi6fe672")
+spawn_path = NodePath("../RockAttackContainer")

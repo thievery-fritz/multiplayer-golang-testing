@@ -51,11 +51,6 @@ _data = {
 &"roll": SubResource("Animation_p47bc")
 }
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p47bc"]
-properties/0/path = NodePath(".:visible")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-
 [node name="Player" type="CharacterBody2D" unique_id=2070286558 node_paths=PackedStringArray("input")]
 script = ExtResource("1_i3pqv")
 input = NodePath("Input")
@@ -76,8 +71,9 @@ script = ExtResource("3_gmlin")
 [node name="RollbackSynchronizer" type="Node" parent="." unique_id=1839362803 node_paths=PackedStringArray("root")]
 script = ExtResource("4_p47bc")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":roll_timer", ":cooldown_timer", ":recovery_timer", "RockAttackWeapon:last_shoot"])
+state_properties = Array[String]([":global_position", ":roll_timer", ":cooldown_timer", ":recovery_timer", "RockAttackWeapon:last_shoot", ":roll_direction", ":velocity"])
 input_properties = Array[String](["Input:movement", "Input:is_rolling", "Input:is_shooting"])
+enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="TickInterpolator" type="Node" parent="." unique_id=1564638289 node_paths=PackedStringArray("root")]
@@ -88,9 +84,6 @@ metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=137619979]
 libraries/ = SubResource("AnimationLibrary_75vfm")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=22389690]
-replication_config = SubResource("SceneReplicationConfig_p47bc")
 
 [node name="RockAttackWeapon" type="Node2D" parent="." unique_id=586324680 node_paths=PackedStringArray("player", "shoot_rewindable_action", "rbs", "input")]
 script = ExtResource("6_0owmy")

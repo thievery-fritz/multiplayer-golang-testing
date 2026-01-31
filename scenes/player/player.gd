@@ -19,8 +19,15 @@ var recovery_timer = 0
 
 func _ready():
 	global_position = spawn_position
+	visible = false
+	if not NetworkTime.is_initial_sync_done():
+		await NetworkTime.after_sync
+	await get_tree().create_timer(0.2).timeout
+	visible = true
 
-func _rollback_tick(_delta, _tick, is_fresh):
+func _rollback_tick(_delta, _tick, _is_fresh):
+	if not visible:
+		return
 	if cooldown_timer > 0:
 		cooldown_timer -= 1
 	if recovery_timer > 0:
@@ -34,12 +41,11 @@ func _rollback_tick(_delta, _tick, is_fresh):
 			recovery_timer = recovery_duration_ticks
 	else:
 		velocity = lerp(velocity, input.movement.normalized() * speed, 0.75)
-		if input.is_rolling and cooldown_timer == 0 and input.movement != Vector2.ZERO and is_fresh:
+		if input.is_rolling and cooldown_timer == 0 and input.movement != Vector2.ZERO:
 			roll_timer = roll_duration_ticks
 			cooldown_timer = roll_cooldown_ticks
 			roll_direction = input.movement.normalized()
 			velocity = roll_direction * (speed * roll_multiplier)
-
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor

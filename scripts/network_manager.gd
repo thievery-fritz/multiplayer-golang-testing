@@ -5,6 +5,7 @@ var peer = ENetMultiplayerPeer.new()
 var player_container: Node2D = null
 var spawn_point_container: Node2D = null
 var rock_attack_container: Node2D = null
+var rock_spawner: MultiplayerSpawner = null
 var players: Dictionary = {}
 
 func _ready():
@@ -47,13 +48,12 @@ func _on_peer_join(id: int):
 	print("peer join id %d" % id)
 	if id != 1:
 		print("_on_peer_join (%d)" % multiplayer.get_unique_id())
-		var player_avatar = _spawn_player(id)
-		player_avatar.visible = false
-		while not NetworkTime.is_client_synced(id):
-			print("Waiting for sync...")
-			await NetworkTime.after_client_sync
-		player_avatar.visible = true
-		print("Showing player.")
+		_spawn_player(id)
+		#var player_avatar = _spawn_player(id)
+		#player_avatar.visible = false
+		#while not NetworkTime.is_client_synced(id):
+			#await NetworkTime.after_client_sync
+		#player_avatar.visible = true
 
 func _on_peer_leave(id: int):
 	print("_on_peer_leave (%d)" % multiplayer.get_unique_id())
@@ -70,12 +70,15 @@ func _spawn_player(id: int):
 	var player = PLAYER_SCENE.instantiate()
 	players[id] = player
 	player.name = str(id)
+	player.visible = false
+	# The spawn pos logic here is fragile, need to address at some point. Also, is there a reason why I'm not
+	# just using a MultiplayerSpawner for the players? Forestbrawl did it like this...but idk....
 	var spawn_position: Marker2D = spawn_point_container.get_child(0) if player_container.get_child_count() % 2 == 0 else spawn_point_container.get_child(1)
 	player.spawn_position = spawn_position.global_position
 	player.global_position = spawn_position.global_position
 	player_container.add_child(player)
 	player.set_multiplayer_authority(1)
-	print("Player(%d) Spawned at %s" % [multiplayer.get_unique_id(), player.global_position])
+	print("[%d] Player(%d) Spawned at %s" % [multiplayer.get_unique_id(), id, player.global_position])
 	var input = player.find_child("Input")
 	if input:
 		input.set_multiplayer_authority(id)

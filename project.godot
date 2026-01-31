@@ -22,7 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 NetworkManager="*res://scripts/network_manager.gd"
-WindowTiler="*uid://cmqjajhjgffm1"
+WindowTiler="uid://cmqjajhjgffm1"
 NetworkSimulator="*uid://1y2ey1e6qjwr"
 NetworkTime="*uid://cnqdxyjptkfvp"
 NetworkTimeSynchronizer="*uid://5rmn2ik3kjo8"
@@ -58,7 +58,6 @@ shoot={
 
 [netfox]
 
-extras/screen=1
 autoconnect/simulated_latency_ms=30
 
 [rendering]
